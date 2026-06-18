@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:CorIncrescendo.ViewModels"
+             x:Class="CorIncrescendo.Views.EconomiaPage"
+             x:DataType="vm:EconomiaViewModel"
+             Title="Economia"
+             BackgroundColor="{StaticResource IncWhite}">
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="16">
+
+        <!-- Selector de període -->
+        <SegmentedControl Grid.Row="0"
+                          x:Name="segmentPeriode"
+                          Margin="0,8,0,16">
+            <!-- MAUI no té SegmentedControl nadiu; usem Picker o botons -->
+        </SegmentedControl>
+
+        <!-- Usem botons com a selector de període -->
+        <HorizontalStackLayout Grid.Row="0"
+                               Spacing="8"
+                               Margin="0,8,0,0"
+                               HorizontalOptions="Center">
+            <Button Text="Dia"
+                    Command="{Binding SeleccionarPeriodeCommand}"
+                    CommandParameter="dia"
+                    BackgroundColor="{Binding PeriodeDia, Converter={StaticResource BoolToColorConverter}}"
+                    TextColor="{StaticResource IncWhite}"
+                    CornerRadius="20"
+                    HeightRequest="36"
+                    Padding="16,0" />
+            <Button Text="Mes"
+                    Command="{Binding SeleccionarPeriodeCommand}"
+                    CommandParameter="mes"
+                    BackgroundColor="{Binding PeriodeMes, Converter={StaticResource BoolToColorConverter}}"
+                    TextColor="{StaticResource IncWhite}"
+                    CornerRadius="20"
+                    HeightRequest="36"
+                    Padding="16,0" />
+            <Button Text="Curs"
+                    Command="{Binding SeleccionarPeriodeCommand}"
+                    CommandParameter="curs"
+                    BackgroundColor="{Binding PeriodeCurs, Converter={StaticResource BoolToColorConverter}}"
+                    TextColor="{StaticResource IncWhite}"
+                    CornerRadius="20"
+                    HeightRequest="36"
+                    Padding="16,0" />
+        </HorizontalStackLayout>
+
+        <!-- Selector de dates (mes/curs) -->
+        <VerticalStackLayout Grid.Row="1" Margin="0,12,0,0" Spacing="8">
+
+            <!-- Selector de mes -->
+            <HorizontalStackLayout IsVisible="{Binding PeriodeMes}"
+                                   HorizontalOptions="Center"
+                                   Spacing="12">
+                <Button Text="◀"
+                        Command="{Binding MesAnteriorCommand}"
+                        BackgroundColor="Transparent"
+                        TextColor="{StaticResource IncBlack}"
+                        FontSize="20" />
+                <Label Text="{Binding MesActualText}"
+                       FontSize="16"
+                       FontAttributes="Bold"
+                       VerticalOptions="Center"
+                       WidthRequest="140"
+                       HorizontalTextAlignment="Center"
+                       TextColor="{StaticResource IncBlack}" />
+                <Button Text="▶"
+                        Command="{Binding MesSeguentCommand}"
+                        BackgroundColor="Transparent"
+                        TextColor="{StaticResource IncBlack}"
+                        FontSize="20" />
+            </HorizontalStackLayout>
+
+            <!-- Selector de curs (inici/fi) -->
+            <HorizontalStackLayout IsVisible="{Binding PeriodeCurs}"
+                                   HorizontalOptions="Center"
+                                   Spacing="8">
+                <DatePicker Date="{Binding CursInici}"
+                            Format="dd/MM/yyyy"
+                            TextColor="{StaticResource IncBlack}" />
+                <Label Text="→"
+                       VerticalOptions="Center"
+                       TextColor="{StaticResource IncBlack}" />
+                <DatePicker Date="{Binding CursFi}"
+                            Format="dd/MM/yyyy"
+                            TextColor="{StaticResource IncBlack}" />
+            </HorizontalStackLayout>
+
+            <!-- Selector dia -->
+            <DatePicker IsVisible="{Binding PeriodeDia}"
+                        Date="{Binding DiaSeleccionat}"
+                        Format="dd/MM/yyyy"
+                        HorizontalOptions="Center"
+                        TextColor="{StaticResource IncBlack}" />
+
+            <!-- Resum -->
+            <Border BackgroundColor="{StaticResource IncGray}"
+                    StrokeShape="RoundRectangle 12"
+                    Padding="16"
+                    Margin="0,8,0,0">
+                <Grid ColumnDefinitions="*,*,*">
+                    <VerticalStackLayout Grid.Column="0" HorizontalOptions="Center">
+                        <Label Text="Ingressos"
+                               FontSize="12"
+                               TextColor="Gray"
+                               HorizontalOptions="Center" />
+                        <Label Text="{Binding TotalIngressos, StringFormat='{0:N2} €'}"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource IncGreen}"
+                               HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center">
+                        <Label Text="Gastos"
+                               FontSize="12"
+                               TextColor="Gray"
+                               HorizontalOptions="Center" />
+                        <Label Text="{Binding TotalGastos, StringFormat='{0:N2} €'}"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource IncRedAmount}"
+                               HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="2" HorizontalOptions="Center">
+                        <Label Text="Balanç"
+                               FontSize="12"
+                               TextColor="Gray"
+                               HorizontalOptions="Center" />
+                        <Label Text="{Binding Balanc, StringFormat='{0:N2} €'}"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               TextColor="{Binding BalancColor}"
+                               HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                </Grid>
+            </Border>
+        </VerticalStackLayout>
+
+        <!-- Llista de transaccions -->
+        <CollectionView Grid.Row="2"
+                        ItemsSource="{Binding Transaccions}"
+                        Margin="0,16,0,0"
+                        EmptyView="Cap transacció en aquest període.">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <SwipeView>
+                        <SwipeView.RightItems>
+                            <SwipeItems>
+                                <SwipeItem Text="Eliminar"
+                                           BackgroundColor="Red"
+                                           Command="{Binding Source={RelativeSource AncestorType={x:Type vm:EconomiaViewModel}}, Path=EliminarCommand}"
+                                           CommandParameter="{Binding .}" />
+                            </SwipeItems>
+                        </SwipeView.RightItems>
+                        <Border Margin="0,4"
+                                Padding="16,12"
+                                BackgroundColor="{StaticResource IncWhite}"
+                                StrokeShape="RoundRectangle 10"
+                                StrokeThickness="1"
+                                Stroke="LightGray">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <VerticalStackLayout Grid.Column="0">
+                                    <Label Text="{Binding Descripcio}"
+                                           FontSize="15"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource IncBlack}" />
+                                    <Label Text="{Binding Categoria}"
+                                           FontSize="12"
+                                           TextColor="Gray" />
+                                    <Label Text="{Binding Data, StringFormat='{0:dd/MM/yyyy}'}"
+                                           FontSize="11"
+                                           TextColor="LightGray" />
+                                </VerticalStackLayout>
+                                <Label Grid.Column="1"
+                                       Text="{Binding Import, StringFormat='{0:N2} €'}"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       VerticalOptions="Center" />
+                            </Grid>
+                        </Border>
+                    </SwipeView>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Botó afegir -->
+        <Button Grid.Row="3"
+                Text="+ Afegir transacció"
+                Command="{Binding AfegirCommand}"
+                BackgroundColor="{StaticResource IncRed}"
+                TextColor="{StaticResource IncWhite}"
+                FontAttributes="Bold"
+                HeightRequest="52"
+                CornerRadius="8"
+                Margin="0,8,0,8" />
+    </Grid>
+</ContentPage>
