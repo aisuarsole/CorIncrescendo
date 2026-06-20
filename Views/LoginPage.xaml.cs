@@ -1,19 +1,12 @@
+using CorIncrescendo.ViewModels;
+
 namespace CorIncrescendo.Views;
 
-public partial class LoginPage : Window
+public partial class LoginPage : ContentPage
 {
-	public LoginPage()
-	{
-		InitializeComponent();
-		Page = new ContentPage()
-		{
-			Content = new VerticalStackLayout
-			{
-				Children = {
-					new Label { HorizontalOptions = LayoutOptions.Center, VerticalOptions = LayoutOptions.Center, Text = "Welcome to .NET MAUI!"
-					}
-				}
-			}
-		};
-	}
+    public LoginPage(LoginViewModel viewModel)
+    {
+        InitializeComponent();
+        BindingContext = viewModel;
+    }
 }

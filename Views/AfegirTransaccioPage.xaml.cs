@@ -1,19 +1,12 @@
+using CorIncrescendo.ViewModels;
+
 namespace CorIncrescendo.Views;
 
-public partial class AfegirTransaccioPage : Window
+public partial class AfegirTransaccioPage : ContentPage
 {
-	public AfegirTransaccioPage()
-	{
-		InitializeComponent();
-		Page = new ContentPage()
-		{
-			Content = new VerticalStackLayout
-			{
-				Children = {
-					new Label { HorizontalOptions = LayoutOptions.Center, VerticalOptions = LayoutOptions.Center, Text = "Welcome to .NET MAUI!"
-					}
-				}
-			}
-		};
-	}
+    public AfegirTransaccioPage(AfegirTransaccioViewModel viewModel)
+    {
+        InitializeComponent();
+        BindingContext = viewModel;
+    }
 }
