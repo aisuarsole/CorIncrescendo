@@ -9,13 +9,6 @@
 
     <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="16">
 
-        <!-- Selector de període -->
-        <SegmentedControl Grid.Row="0"
-                          x:Name="segmentPeriode"
-                          Margin="0,8,0,16">
-            <!-- MAUI no té SegmentedControl nadiu; usem Picker o botons -->
-        </SegmentedControl>
-
         <!-- Usem botons com a selector de període -->
         <HorizontalStackLayout Grid.Row="0"
                                Spacing="8"
