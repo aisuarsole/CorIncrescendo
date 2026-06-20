@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:CorIncrescendo.ViewModels"
+             xmlns:models="clr-namespace:CorIncrescendo.Models"
              x:Class="CorIncrescendo.Views.EconomiaPage"
              x:DataType="vm:EconomiaViewModel"
              Title="Economia"
@@ -137,7 +138,7 @@
                         Margin="0,16,0,0"
                         EmptyView="Cap transacció en aquest període.">
             <CollectionView.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate x:DataType="models:Transaccio">
                     <SwipeView>
                         <SwipeView.RightItems>
                             <SwipeItems>
