@@ -12,5 +12,6 @@ namespace CorIncrescendo.Models
         public string Email { get; set; } = string.Empty;
         public string PasswordHash { get; set; } = string.Empty;
         public string Nom { get; set; } = string.Empty;
+        public string Cognoms { get; set; } = string.Empty;
     }
 }

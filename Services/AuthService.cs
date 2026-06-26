@@ -10,7 +10,7 @@ namespace CorIncrescendo.Services
         private const string UsersKey = "users";
         private const string CurrentUserKey = "current_user";
 
-        public async Task<(bool ok, string error)> RegistrarAsync(string email, string password)
+        public async Task<(bool ok, string error)> RegistrarAsync(string email, string password, string nom, string cognoms)
         {
             var users = GetUsers();
             if (users.Any(u => u.Email.ToLower() == email.ToLower()))
@@ -19,7 +19,9 @@ namespace CorIncrescendo.Services
             var user = new User
             {
                 Email = email,
-                PasswordHash = HashPassword(password)
+                PasswordHash = HashPassword(password),
+                Nom = nom,
+                Cognoms = cognoms
             };
             users.Add(user);
             SaveUsers(users);

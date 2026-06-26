@@ -15,7 +15,7 @@ namespace CorIncrescendo.ViewModels
             _authService = authService;
             var user = _authService.GetCurrentUser();
             if (user != null)
-                Salutacio = $"Hola, {user.Email.Split('@')[0]}!";
+                Salutacio = $"Hola, {user.Nom}!";
         }
 
         [RelayCommand]

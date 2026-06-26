@@ -18,6 +18,9 @@ namespace CorIncrescendo.ViewModels
         [ObservableProperty] private string errorMessage = string.Empty;
         [ObservableProperty] private bool isBusy;
         [ObservableProperty] private bool hasError;
+        [ObservableProperty] private string nom = string.Empty;
+        [ObservableProperty] private string cognoms = string.Empty;
+        [ObservableProperty] private bool mostrarCampsRegistre; // controla visibilitat dels camps extra
 
         public LoginViewModel(AuthService authService)
         {
@@ -54,6 +57,11 @@ namespace CorIncrescendo.ViewModels
                 MostrarError("Omple tots els camps.");
                 return;
             }
+            if (string.IsNullOrWhiteSpace(Nom) || string.IsNullOrWhiteSpace(Cognoms))
+            {
+                MostrarError("Introdueix el teu nom i cognoms.");
+                return;
+            }
             if (Password.Length < 6)
             {
                 MostrarError("La contrasenya ha de tenir mínim 6 caràcters.");
@@ -63,7 +71,7 @@ namespace CorIncrescendo.ViewModels
             IsBusy = true;
             HasError = false;
 
-            var (ok, error) = await _authService.RegistrarAsync(Email, Password);
+            var (ok, error) = await _authService.RegistrarAsync(Email, Password, Nom, Cognoms);
 
             IsBusy = false;
 
@@ -77,6 +85,13 @@ namespace CorIncrescendo.ViewModels
         {
             ErrorMessage = msg;
             HasError = true;
+        }
+
+        [RelayCommand]
+        private void MostrarRegistre()
+        {
+            MostrarCampsRegistre = true;
+            HasError = false;
         }
     }
 }
