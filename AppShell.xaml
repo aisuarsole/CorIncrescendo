@@ -8,4 +8,9 @@
     <ShellContent Title="Login"
                   Route="LoginPage"
                   ContentTemplate="{DataTemplate views:LoginPage}" />
+
+    <ShellContent Title="Inici"
+                  Route="MainPage"
+                  ContentTemplate="{DataTemplate views:MainPage}" />
+
 </Shell>

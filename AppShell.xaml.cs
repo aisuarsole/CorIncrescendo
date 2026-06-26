@@ -6,7 +6,6 @@
         {
             InitializeComponent();
             // Registrar rutas
-            Routing.RegisterRoute("MainPage", typeof(Views.MainPage));
             Routing.RegisterRoute("EconomiaPage", typeof(Views.EconomiaPage));
             Routing.RegisterRoute("AfegirTransaccioPage", typeof(Views.AfegirTransaccioPage));
         }

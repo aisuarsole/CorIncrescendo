@@ -23,7 +23,7 @@
                    FontSize="22"
                    FontAttributes="Bold"
                    TextColor="{StaticResource IncBlack}" />
-            <Label Text="Què vols fer avui?"
+            <Label Text="Escull una opció"
                    FontSize="15"
                    TextColor="Gray" />
         </VerticalStackLayout>
