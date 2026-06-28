@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "98711195152",
+    "project_id": "corincrescendo-231b1",
+    "storage_bucket": "corincrescendo-231b1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:98711195152:android:3d688e1ccc7cdcce3f0495",
+        "android_client_info": {
+          "package_name": "com.companyname.corincrescendo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjEBbGN45R4c0v05uODBjh-SIgd3KXh9A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
