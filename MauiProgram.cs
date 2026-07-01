@@ -1,40 +1,46 @@
-﻿using Microsoft.Extensions.Logging;
-using CorIncrescendo.Services;
+﻿using CorIncrescendo.Services;
 using CorIncrescendo.ViewModels;
 using CorIncrescendo.Views;
+using Plugin.Firebase.Auth;
+using Plugin.Firebase.Firestore;
+using Plugin.Firebase.Core;
 
-namespace CorIncrescendo
+namespace CorIncrescendo;
+
+public static class MauiProgram
 {
-    public static class MauiProgram
+    public static MauiApp CreateMauiApp()
     {
-        public static MauiApp CreateMauiApp()
-        {
-            var builder = MauiApp.CreateBuilder();
-            builder
-                .UseMauiApp<App>()
-                .ConfigureFonts(fonts =>
-                {
-                    fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-                    fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-                });
+        var builder = MauiApp.CreateBuilder();
+        builder
+            .UseMauiApp<App>()
+            .UseFirebase()
+            .ConfigureFonts(fonts =>
+            {
+                fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+                fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+            });
 
-            // Servicios
-            builder.Services.AddSingleton<AuthService>();
-            builder.Services.AddSingleton<EconomiaService>();
+        // Firebase
+        builder.Services.AddSingleton(_ => CrossFirebaseAuth.Current);
+        builder.Services.AddSingleton(_ => CrossFirebaseFirestore.Current);
 
-            // ViewModels
-            builder.Services.AddTransient<LoginViewModel>();
-            builder.Services.AddTransient<MainViewModel>();
-            builder.Services.AddTransient<EconomiaViewModel>();
-            builder.Services.AddTransient<AfegirTransaccioViewModel>();
+        // Serveis
+        builder.Services.AddSingleton<AuthService>();
+        builder.Services.AddSingleton<EconomiaService>();
 
-            // Views
-            builder.Services.AddTransient<LoginPage>();
-            builder.Services.AddTransient<MainPage>();
-            builder.Services.AddTransient<EconomiaPage>();
-            builder.Services.AddTransient<AfegirTransaccioPage>();
+        // ViewModels
+        builder.Services.AddTransient<LoginViewModel>();
+        builder.Services.AddTransient<MainViewModel>();
+        builder.Services.AddTransient<EconomiaViewModel>();
+        builder.Services.AddTransient<AfegirTransaccioViewModel>();
 
-            return builder.Build();
-        }
+        // Views
+        builder.Services.AddTransient<LoginPage>();
+        builder.Services.AddTransient<MainPage>();
+        builder.Services.AddTransient<EconomiaPage>();
+        builder.Services.AddTransient<AfegirTransaccioPage>();
+
+        return builder.Build();
     }
 }

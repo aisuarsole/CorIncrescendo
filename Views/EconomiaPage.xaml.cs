@@ -10,11 +10,11 @@ namespace CorIncrescendo.Views
             BindingContext = viewModel;
         }
 
-        protected override void OnAppearing()
+        protected override async void OnAppearing()
         {
             base.OnAppearing();
             if (BindingContext is EconomiaViewModel vm)
-                vm.OnAppearing();
+                await vm.OnAppearing();
         }
     }
 }

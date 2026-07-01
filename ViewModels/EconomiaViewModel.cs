@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using CorIncrescendo.Models;
 using CorIncrescendo.Services;
+using IntelliJ.Lang.Annotations;
 using System.Collections.ObjectModel;
 using System.Transactions;
 
@@ -12,6 +13,7 @@ namespace CorIncrescendo.ViewModels
         private readonly EconomiaService _economiaService;
         private readonly AuthService _authService;
 
+        [ObservableProperty] private bool isBusy;
         [ObservableProperty] private ObservableCollection<Transaccio> transaccions = new();
         [ObservableProperty] private decimal totalIngressos;
         [ObservableProperty] private decimal totalGastos;
@@ -34,7 +36,7 @@ namespace CorIncrescendo.ViewModels
         {
             _economiaService = economiaService;
             _authService = authService;
-            CarregarDades();
+            CarregarDadesAsync();
         }
 
         [RelayCommand]
@@ -43,7 +45,7 @@ namespace CorIncrescendo.ViewModels
             PeriodeDia = periode == "dia";
             PeriodeMes = periode == "mes";
             PeriodeCurs = periode == "curs";
-            CarregarDades();
+            CarregarDadesAsync();
         }
 
         [RelayCommand]
@@ -51,7 +53,7 @@ namespace CorIncrescendo.ViewModels
         {
             MesActual = MesActual.AddMonths(-1);
             OnPropertyChanged(nameof(MesActualText));
-            CarregarDades();
+            CarregarDadesAsync();
         }
 
         [RelayCommand]
@@ -59,7 +61,7 @@ namespace CorIncrescendo.ViewModels
         {
             MesActual = MesActual.AddMonths(1);
             OnPropertyChanged(nameof(MesActualText));
-            CarregarDades();
+            CarregarDadesAsync();
         }
 
         [RelayCommand]
@@ -68,23 +70,18 @@ namespace CorIncrescendo.ViewModels
             await Shell.Current.GoToAsync("AfegirTransaccioPage");
         }
 
-        [RelayCommand]
-        private void Eliminar(Transaccio t)
+        public async Task CarregarDadesAsync()
         {
-            _economiaService.EliminarTransaccio(t.Id);
-            CarregarDades();
-        }
+            IsBusy = true;
 
-        public void CarregarDades()
-        {
             List<Transaccio> list;
 
             if (PeriodeDia)
-                list = _economiaService.GetPerDia(DiaSeleccionat);
+                list = await _economiaService.GetPerDiaAsync(DiaSeleccionat);
             else if (PeriodeMes)
-                list = _economiaService.GetPerMes(MesActual.Year, MesActual.Month);
+                list = await _economiaService.GetPerMesAsync(MesActual.Year, MesActual.Month);
             else
-                list = _economiaService.GetPerCurs(CursInici, CursFi);
+                list = await _economiaService.GetPerCursAsync(CursInici, CursFi);
 
             Transaccions = new ObservableCollection<Transaccio>(
                 list.OrderByDescending(t => t.Data));
@@ -92,11 +89,21 @@ namespace CorIncrescendo.ViewModels
             TotalIngressos = _economiaService.TotalIngressos(list);
             TotalGastos = _economiaService.TotalGastos(list);
             Balanc = _economiaService.Balanc(list);
-            BalancColor = Balanc >= 0 ? Color.FromArgb("#2E7D32") : Color.FromArgb("#C62828");
+            BalancColor = Balanc >= 0
+                ? Color.FromArgb("#2E7D32")
+                : Color.FromArgb("#C62828");
+
+            IsBusy = false;
         }
 
-        // Recargar al volver de AfegirTransaccioPage
-        public void OnAppearing() => CarregarDades();
+        [RelayCommand]
+        private async Task EliminarAsync(Transaccio t)
+        {
+            await _economiaService.EliminarTransaccioAsync(t.Id);
+            await CarregarDadesAsync();
+        }
+
+        public async Task OnAppearing() => await CarregarDadesAsync();
     }
 }
 

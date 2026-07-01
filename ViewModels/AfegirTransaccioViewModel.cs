@@ -69,7 +69,7 @@ namespace CorIncrescendo.ViewModels
                 UserId = user?.Id ?? string.Empty
             };
 
-            _economiaService.AfegirTransaccio(t);
+            await _economiaService.AfegirTransaccioAsync(t);
             await Shell.Current.GoToAsync("..");
         }
 
