@@ -2,8 +2,14 @@
 using CorIncrescendo.ViewModels;
 using CorIncrescendo.Views;
 using Plugin.Firebase.Auth;
-using Plugin.Firebase.Firestore;
 using Plugin.Firebase.Core;
+using Plugin.Firebase.Firestore;
+using Microsoft.Maui.LifecycleEvents;
+
+
+#if ANDROID
+using Plugin.Firebase.Core.Platforms.Android;
+#endif
 
 namespace CorIncrescendo;
 
@@ -14,16 +20,12 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
-            .UseFirebase()
+            .RegisterFirebaseServices()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
-
-        // Firebase
-        builder.Services.AddSingleton(_ => CrossFirebaseAuth.Current);
-        builder.Services.AddSingleton(_ => CrossFirebaseFirestore.Current);
 
         // Serveis
         builder.Services.AddSingleton<AuthService>();
@@ -42,5 +44,25 @@ public static class MauiProgram
         builder.Services.AddTransient<AfegirTransaccioPage>();
 
         return builder.Build();
+    }
+
+    private static MauiAppBuilder RegisterFirebaseServices(this MauiAppBuilder builder)
+    {
+        builder.ConfigureLifecycleEvents(events =>
+        {
+#if ANDROID
+            events.AddAndroid(android => android.OnCreate((activity, _) =>
+            {
+                CrossFirebase.Initialize(activity, new CrossFirebaseSettings(
+                    isAuthEnabled: true,
+                    isFirestoreEnabled: true));
+            }));
+#endif
+        });
+
+        builder.Services.AddSingleton(_ => CrossFirebaseAuth.Current);
+        builder.Services.AddSingleton(_ => CrossFirebaseFirestore.Current);
+
+        return builder;
     }
 }
